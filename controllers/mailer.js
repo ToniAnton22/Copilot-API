@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer"
+import * as aws from "@aws-sdk/client-ses"
 import hbs from "nodemailer-express-handlebars"
 import path from 'path'
 
@@ -10,6 +11,10 @@ const handlebarOptions = {
     viewPath: path.resolve('./views/'),
 };
 
+
+const ses = new aws.SES(
+    
+)
 
 const transporter = nodemailer.createTransport({
     service:'gmail',
