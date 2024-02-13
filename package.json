@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "dev": "nodemon --env-file=.env server.js"
+    "dev": "nodemon= --env-file=.env server.js",
+    "host": "pm2 --env-file=.env server.js"
   },
   "type": "module",
   "dependencies": {
