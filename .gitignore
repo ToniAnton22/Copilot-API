@@ -131,3 +131,5 @@ dist
 
 #ecosystem
 ecosystem.config.cjs
+# Local Netlify folder
+.netlify
