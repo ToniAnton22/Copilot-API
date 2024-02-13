@@ -34,7 +34,7 @@ export default async function send(userData,template,pdf=null){
     }
     const info = await transporter.sendMail({
         from: ' "Toni From Fellowbot" <toni@fellow-bot.com>',
-        to:"sida.jiang@fellow-bot.com",
+        to:`${userData.email}`,
         subject: "Your driving session",
         template: template,
         context:{
