@@ -1,0 +1,20 @@
+{
+  "scripts": {
+    "dev": "nodemon --env-file=.env server.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-handlebars": "^7.1.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.4",
+    "nodemailer": "^6.9.8",
+    "nodemailer-express-handlebars": "^6.1.0",
+    "pdfkit": "^0.14.0",
+    "stripe": "^14.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
