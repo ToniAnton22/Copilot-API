@@ -43,8 +43,6 @@ const dbConnection = async () =>{
 const authenticateToken = (req,res,next) => {
     const authHeader = req.headers['authorization'].split(' ')[1]
     const token = jwt.sign({allowed:'true'},authHeader,{algorithm:'HS256'})
-    console.log(token)
- 
     
     if(token==null) return res.sendStatus(401);
 
@@ -104,6 +102,10 @@ app.post('/webhook',json({type:'application/json'}),async (req,res) =>{
            
     }
 
+})
+
+app.get('/',(req,res)=>{
+    res.send("Server is on")
 })
 
 app.use("/user", userRoutes)

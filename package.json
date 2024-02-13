@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "nodemon= --env-file=.env server.js",
-    "host": "pm2 --env-file=.env server.js"
+    "host": "pm2 start ecosystem.config.cjs --watch"
   },
   "type": "module",
   "dependencies": {
