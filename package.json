@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "node start server.js",
-    "build": "node build server.js",
+    "build": "node start server.js",
     "host": "pm2 start ecosystem.config.cjs --watch"
   },
   "type": "module",
