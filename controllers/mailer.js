@@ -63,12 +63,11 @@ export default async function send(userData, template, pdf = null) {
             path: `./views/pdfs/sessions-${userData.fullname}-${userData.gameStarted.at(-1)}.pdf`,
         });
     }
-
     try {
         console.log("sending")
         const info = await transporter.sendMail({
             from: `Sida from Fellow-bot <${process.env.EMAIL}>`,
-            to: `toni@fellow-bot.com`,
+            to: userData.email,
             subject: "Your driving session",
             template: template, // Confirm this matches a `.handlebars` file in `./views/`
             context: {
