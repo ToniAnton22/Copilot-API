@@ -33,8 +33,13 @@ export default class UserService{
             repository.findUserEmail(email).then(data =>{
                 const sessions = data?.sessions
                 let pdf =createPdf(data)
-              
-                send(data,"raport",pdf)
+                console.log("PDF created")
+                if(pdf == undefined){
+                    send(data,"password",null)
+                }else{
+                   send(data,"raport",pdf)
+                }
+                console.log("Email Sent")
                 resolve({sessions})
             }).catch(err => {reject(err)})
         })

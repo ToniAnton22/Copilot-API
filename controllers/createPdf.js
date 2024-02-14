@@ -96,5 +96,5 @@ export default function createPdf(user) {
     });
     // Finalize the PDF and end the stream
     doc.end();
-
+    return doc
 }
