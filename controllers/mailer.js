@@ -17,27 +17,44 @@ const handlebarOptions = {
 // Codemod has attempted to pass values to each service client in this file.
 // You may need to update clients outside of this file, if they use global config.
 
-const sesClient = new SES({
-    apiVersion:"2014-10-01",
-    region: process.env.AWS_REGION,
-    credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    },
-    defaultProvider,
+
+
+// AWS SES CONFIGURATION BELOW
+
+// const sesClient = new SES({
+//     apiVersion:"2014-10-01",
+//     region: process.env.AWS_REGION,
+//     credentials: {
+//         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+//         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+//     },
+//     defaultProvider,
     
-});
+// });
 
 
+//const transporter = nodemailer.createTransport({
+//    SES: { ses:sesClient, aws },
+//    sendingRate:1
+//});
+
+
+// Gooogle configuration below
 const transporter = nodemailer.createTransport({
-    SES: { ses:sesClient, aws },
-    sendingRate:1
-});
-
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      // TODO: replace `user` and `pass` values from <https://forwardemail.net>
+      user: process.env.EMAIL,
+      pass: process.env.PASS,
+    },
+    
+  });
 
 
 transporter.use('compile', hbs(handlebarOptions))
-
+console.log(process.env.AWS_SECRET_ACCESS_KEY)
 export default async function send(userData, template, pdf = null) {
     let attachments = [];
     if (pdf) {
@@ -48,8 +65,9 @@ export default async function send(userData, template, pdf = null) {
     }
 
     try {
+        console.log("sending")
         const info = await transporter.sendMail({
-            from: 'toni@fellow-bot.com',
+            from: `Sida from Fellow-bot <${process.env.EMAIL}>`,
             to: `toni@fellow-bot.com`,
             subject: "Your driving session",
             template: template, // Confirm this matches a `.handlebars` file in `./views/`
