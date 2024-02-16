@@ -44,7 +44,7 @@ export default class UserService{
                         setTimeout(()=>{
                             fs.unlink(`./views/pdfs/sessions-${data?.fullname}-${data?.gameStarted.at(-1)}.pdf`)
                             
-                        },500)
+                        },750)
                         resolve("Success")
                     })
                     
