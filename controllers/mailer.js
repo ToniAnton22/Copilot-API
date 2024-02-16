@@ -1,9 +1,10 @@
 import nodemailer from "nodemailer"
-import {SES} from "@aws-sdk/client-ses"
-import * as aws from "@aws-sdk/client-ses"
-import {defaultProvider} from "@aws-sdk/credential-provider-node"
+//import {SES} from "@aws-sdk/client-ses"
+//import * as aws from "@aws-sdk/client-ses"
+//import {defaultProvider} from "@aws-sdk/credential-provider-node"
 import hbs from "nodemailer-express-handlebars"
 import path from 'path'
+import fs from 'fs'
 
 const handlebarOptions = {
     viewEngine: {
@@ -54,7 +55,6 @@ const transporter = nodemailer.createTransport({
 
 
 transporter.use('compile', hbs(handlebarOptions))
-console.log(process.env.AWS_SECRET_ACCESS_KEY)
 export default async function send(userData, template, pdf = null) {
     let attachments = [];
     if (pdf) {
@@ -67,7 +67,7 @@ export default async function send(userData, template, pdf = null) {
         console.log("sending")
         const info = await transporter.sendMail({
             from: `Sida from Fellow-bot <${process.env.EMAIL}>`,
-            to: userData.email,
+            to: 'toni.22.dante@gmail.com',
             subject: "Your driving session",
             template: template, // Confirm this matches a `.handlebars` file in `./views/`
             context: {
@@ -78,7 +78,9 @@ export default async function send(userData, template, pdf = null) {
         });
 
         console.log('Email sent: ', info);
+     
     } catch (error) {
         console.error("Error while sending email: ", error);
+
     }
 }

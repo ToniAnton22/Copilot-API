@@ -16,10 +16,11 @@ export async function findSessionByEmail(req,res){
     const email = req.params.email
     try{
         const sessions = await userService.findSessionByEmail(email)
+        console.log(sessions)
         if(sessions){
             res.status(200).send("OK")
         }else{
-            res.status(404).send("Something went wrong")
+            res.status(404).send("User not found!")
         }
     }catch(e){
         console.error(e.message)

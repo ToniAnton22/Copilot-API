@@ -53,6 +53,11 @@ const authenticateToken = (req,res,next) => {
     })
 }
 
+app.post("/sendSession",authenticateToken, async(req,res) =>{
+    console.log(req.body)
+    res.status(200)
+})
+
 app.get("/sendEmail/:email",authenticateToken,async (req,res) =>{
    
     if(!req.allowed){
