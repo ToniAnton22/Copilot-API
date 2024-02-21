@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import timeCalculator from '../../lib/timeCalculator.js';
 import generatePassword from "../../lib/generatePassword.js";
 import send from '../../controllers/mailer.js';
-import createPdf from '../../controllers/createPdf.js';
+import {createPdf, createSessionPdf} from '../../controllers/createPdf.js';
 import fs from 'fs/promises'
 
 var User = mongoose.model("credentials")
@@ -28,6 +28,35 @@ export default class UserService{
         })
     }
     
+    createSession(data){
+        return new Promise(function(resolve,reject){
+            try{
+                if(data){
+                    createSessionPdf(data).then(pdf =>{
+                        console.log("PDF created")
+                        if(pdf == undefined){
+                            send(data,"password",null)
+                        }else{
+                        send(data,"raport",pdf)
+                        }
+                        console.log("Email Sent")
+                        setTimeout(()=>{
+                            fs.unlink(`./views/pdfs/sessions-${data?.studentName}-${data?.timeStarted}-${data?.timeEnded}.pdf`)
+                            
+                        },750)
+                        resolve("Success")
+                    })
+                    
+                }else{
+                    resolve(null)
+                }
+            }catch(e){
+                console.warn("The following error has been produced -> " + e)
+                reject(e)
+            }
+        })
+    }
+
     findSessionByEmail(email){
         return new Promise(function(resolve,reject){
   

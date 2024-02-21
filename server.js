@@ -4,7 +4,7 @@ import cors from 'cors'
 import userRoutes from './routes/userRoutes.js'
 import dbConnect from './controllers/dbConnect.js'
 import clientPromise from './controllers/mongodb.js'
-import {updateUser,findSessionByEmail} from  './controllers/user.js'
+import {updateUser,findSessionByEmail, sendSession} from  './controllers/user.js'
 import hbs from "nodemailer-express-handlebars"
 import nodemailer from "nodemailer"
 import { fileURLToPath } from 'url';
@@ -24,6 +24,8 @@ app.engine('handlebars',hbs({
     extname:'.handlebars',
     defaultLayout:false,
 }))
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
 
 app.set('view engine','handlebars')
 app.set('views', viewsPath)
@@ -54,7 +56,8 @@ const authenticateToken = (req,res,next) => {
 }
 
 app.post("/sendSession",authenticateToken, async(req,res) =>{
-    console.log(req.body)
+    console.log(await req.body)
+    sendSession(req,res)
     res.status(200)
 })
 

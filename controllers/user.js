@@ -42,3 +42,19 @@ export async function updateUser(req,res){
         res.status(500).json({"message":"Server Error"})
     }
 }
+
+export async function sendSession(req,res){
+    const session =req.body
+    try{
+         
+        const response = await userService.createSession(session)
+        if(response){
+            return res.status(200).send(response)
+        }
+        return res.status(403).send("Something went wrong!")
+        
+    }catch(e){
+        console.warn(e.message)
+        res.status(500).json({"Message":e.message})
+    }
+}

@@ -58,16 +58,24 @@ transporter.use('compile', hbs(handlebarOptions))
 export default async function send(userData, template, pdf = null) {
     let attachments = [];
     if (pdf) {
-        attachments.push({
-            filename: `sessions-${userData.fullname}-${userData.gameStarted.at(-1)}.pdf`,
-            path: `./views/pdfs/sessions-${userData.fullname}-${userData.gameStarted.at(-1)}.pdf`,
-        });
+        if(!userData?.fullname){
+            attachments.push({
+                filename: `sessions-${userData.studentName}-${userData.timeStarted}-${userData.timeEnded}.pdf`,
+                path: `./views/pdfs/sessions-${userData.studentName}-${userData.timeStarted}-${userData.timeEnded}.pdf`,
+            });
+        }else{
+            attachments.push({
+                filename: `sessions-${userData.fullname}-${userData.gameStarted.at(-1)}.pdf`,
+                path: `./views/pdfs/sessions-${userData.fullname}-${userData.gameStarted.at(-1)}.pdf`,
+            });
+        }
     }
+    console.log("Email is processed.....")
     try {
         console.log("sending")
         const info = await transporter.sendMail({
             from: `Sida from Fellow-bot <${process.env.EMAIL}>`,
-            to: userData.email,
+            to: userData?.email,
             subject: "Your driving session",
             template: template, // Confirm this matches a `.handlebars` file in `./views/`
             context: {
