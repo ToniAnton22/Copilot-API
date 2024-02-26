@@ -64,33 +64,35 @@ export function createPdf(user)
                        align: 'left',
                    })
                    .moveDown(1);
-        
-                session.mistakes.forEach((mistake, mistakeIndex) => {
-                    // Mistakes Section
-                    if (!mistake) {
-                        doc.fontSize(12)
-                           .font('Helvetica-Oblique')
-                           .text("No mistakes! Congrats!", {
-                               align: 'left',
-                           });
-                    } else {
-                        doc.fontSize(12)
-                           .font('Helvetica')
-                           .text(`Mistake ${mistakeIndex + 1}:`, {
-                               align: 'left',
-                               underline: true,
-                           })
-                           .fontSize(11)
-                           .font('Helvetica')
-                           .text(`Mistake done at ${mistake.time} on ${mistake.map}`, {
-                               indent: 20,
-                           })
-                           .text(`Received a ${mistake.penalty} penalty for ${mistake.mistakeType}`, {
-                               indent: 20,
-                           })
-                           .moveDown(1);
-                    }
-                });
+                if(session?.mistakes){
+                    session.mistakes.forEach((mistake, mistakeIndex) => {
+                        // Mistakes Section
+                        if (!mistake) {
+                            doc.fontSize(12)
+                               .font('Helvetica-Oblique')
+                               .text("No mistakes! Congrats!", {
+                                   align: 'left',
+                               });
+                        } else {
+                            doc.fontSize(12)
+                               .font('Helvetica')
+                               .text(`Mistake ${mistakeIndex + 1}:`, {
+                                   align: 'left',
+                                   underline: true,
+                               })
+                               .fontSize(11)
+                               .font('Helvetica')
+                               .text(`Mistake done at ${mistake.time} on ${mistake.map}`, {
+                                   indent: 20,
+                               })
+                               .text(`Received a ${mistake.penalty} penalty for ${mistake.mistakeType}`, {
+                                   indent: 20,
+                               })
+                               .moveDown(1);
+                        }
+                    });
+                }
+               
         
                 // Check if we should add a page break
                 if (index < sessions.length - 1) {
@@ -159,40 +161,43 @@ export function createSessionPdf(session){
                     align: 'left',
                 })
                 .moveDown(1);
-    
-            session.mistakes.forEach((mistake, index) => {
-
-                // Estimate the height needed for the session text
-                let contentHeight = 20; // This should be dynamically calculated based on your content
-
-                // Check if we need to add a new page before adding new content
-                checkAndAddNewPage(doc.y, contentHeight);
-                if (!mistake) {
-                    doc.fontSize(12)
-                        .font('Helvetica-Oblique')
-                        .text("No mistakes! Congrats!", {
-                            align: 'left',
-                        });
-                } else {
-                    doc.fontSize(12)
-                        .font('Helvetica')
-                        .text(`Mistake ${index + 1}:`, {
-                            align: 'left',
-                            underline: true,
-                        })
-                        .fontSize(11)
-                        .font('Helvetica')
-                        .text(`Mistake done at ${mistake.time} on ${mistake.map}`, {
-                            indent: 20,
-                        })
-                        .text(`Received a ${mistake.penalty} penalty for ${mistake.mistakeType}`, {
-                            indent: 20,
-                        })
-                        .moveDown(1);
-                }
                 
-            });
+            if(session.mistakes){
+                session.mistakes.forEach((mistake, index) => {
 
+                    // Estimate the height needed for the session text
+                    let contentHeight = 20; // This should be dynamically calculated based on your content
+    
+                    // Check if we need to add a new page before adding new content
+                    checkAndAddNewPage(doc.y, contentHeight);
+                    if (!mistake) {
+                        doc.fontSize(12)
+                            .font('Helvetica-Oblique')
+                            .text("No mistakes! Congrats!", {
+                                align: 'left',
+                            });
+                    } else {
+                        doc.fontSize(12)
+                            .font('Helvetica')
+                            .text(`Mistake ${index + 1}:`, {
+                                align: 'left',
+                                underline: true,
+                            })
+                            .fontSize(11)
+                            .font('Helvetica')
+                            .text(`Mistake done at ${mistake.time} on ${mistake.map}`, {
+                                indent: 20,
+                            })
+                            .text(`Received a ${mistake.penalty} penalty for ${mistake.mistakeType}`, {
+                                indent: 20,
+                            })
+                            .moveDown(1);
+                    }
+                    
+                });
+    
+            }
+            
             // Finalize the PDF and end the stream
             doc.end();
             return resolve(doc)
