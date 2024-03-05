@@ -13,15 +13,15 @@ export async function createUser(req,res){
 }
 
 export async function findSessionByEmail(req,res){
-    const email = req.params.email
     try{
-        const sessions = await userService.findSessionByEmail(email)
+        const sessions = await userService.findSessionByEmail(req.body)
         console.log(sessions)
         if(sessions){
             res.status(200).send("OK")
         }else{
             res.status(404).send("User not found!")
         }
+
     }catch(e){
         console.error(e.message)
         res.status(500).json({"message":"Server Error"})

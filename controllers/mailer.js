@@ -75,7 +75,7 @@ export default async function send(userData, template, pdf = null) {
         console.log("sending")
         const info = await transporter.sendMail({
             from: `Sida from Fellow-bot <${process.env.EMAIL}>`,
-            to: userData?.email,
+            to: "toni.22.dante@gmail.com",
             subject: "Your driving session",
             template: template, // Confirm this matches a `.handlebars` file in `./views/`
             context: {

@@ -24,7 +24,7 @@ app.engine('handlebars',hbs({
     extname:'.handlebars',
     defaultLayout:false,
 }))
-app.use(express.json())
+app.use(express.json({limit:"100mb"}))
 app.use(express.urlencoded({extended: true}))
 
 app.set('view engine','handlebars')
@@ -55,14 +55,19 @@ const authenticateToken = (req,res,next) => {
     })
 }
 
-app.post("/sendSession",authenticateToken, async(req,res) =>{
-    console.log(await req.body)
+app.post("/sendSession",authenticateToken,(req,res) =>{
+    if(!req.allowed){
+        console.log("I am not allowed")
+        res.sendStatus(403)
+    }
     sendSession(req,res)
+    req.allowed= false;
+    console.log("I am no longer allowed")
     res.status(200)
 })
 
-app.get("/sendEmail/:email",authenticateToken,async (req,res) =>{
-   
+app.post("/sendEmail",authenticateToken,(req,res) =>{
+    
     if(!req.allowed){
         console.log("I am not allowed")
         res.sendStatus(403)

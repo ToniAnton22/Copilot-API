@@ -43,7 +43,7 @@ export default class UserService{
                         setTimeout(()=>{
                             fs.unlink(`./views/pdfs/sessions-${data?.studentName}-${data?.timeStarted}-${data?.timeEnded}.pdf`)
                             
-                        },750)
+                        },1350)
                         resolve("Success")
                     })
                     
@@ -57,17 +57,17 @@ export default class UserService{
         })
     }
 
-    findSessionByEmail(email){
+    findSessionByEmail(sessions){
         return new Promise(function(resolve,reject){
   
-            repository.findUserEmail(email).then(data =>{
+            repository.findUserEmail(sessions.email).then(data =>{
                 if(data){
-                    createPdf(data).then(pdf =>{
+                    createPdf(data,sessions).then(pdf =>{
                         console.log("PDF created")
                         if(pdf == undefined){
                             send(data,"password",null)
                         }else{
-                        send(data,"raport",pdf)
+                            send(data,"raport",pdf)
                         }
                         console.log("Email Sent")
                         setTimeout(()=>{

@@ -2,7 +2,7 @@ import PDFDocument from 'pdfkit'
 import fs from "fs"
 import path from 'path'
 
-export function createPdf(user) 
+export function createPdf(user,sessionsReq) 
 {
 
     return new Promise(function(resolve,reject){
@@ -30,8 +30,13 @@ export function createPdf(user)
                    align: 'center',
                })
                .moveDown(2); // Add some space after the title
-        
-            let sessions = user.sessions;
+            
+            let sessions
+            if(!sessionsReq){
+                sessions = user.session
+            }else{
+                sessions = sessionsReq.sessions
+            }
             console.log(sessions.length);
             
             sessions.forEach((session, index) => {
