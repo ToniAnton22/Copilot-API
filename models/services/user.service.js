@@ -37,7 +37,7 @@ export default class UserService{
                         if(pdf == undefined){
                             send(data,"password",null)
                         }else{
-                        send(data,"raport",pdf)
+                            send(data,"raport",pdf)
                         }
                         console.log("Email Sent")
                         setTimeout(()=>{

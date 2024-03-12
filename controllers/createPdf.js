@@ -1,6 +1,8 @@
 import PDFDocument from 'pdfkit'
 import fs from "fs"
 import path from 'path'
+import checkMistake from '../lib/checkMistakeType.js'
+import countMistake from '../lib/countMistakes.js'
 
 export function createPdf(user,sessionsReq) 
 {
@@ -63,13 +65,60 @@ export function createPdf(user,sessionsReq)
                    .moveDown(0.5);
         
                 // Student Name and Grade
-                doc.fontSize(14)
-                   .font('Helvetica')
-                   .text(`${session.studentName} : ${session.grade}`, {
-                       align: 'left',
-                   })
-                   .moveDown(1);
+                switch(true){
+                    case session?.grade <30:
+                        doc.fontSize(14)
+                        .font('Helvetica')
+                        .text(`${session.studentName} you've achieved ${session.grade}/100! Everybody can make mistakes, so lets just go over the summary and see what we can improve on!`, {
+                            align: 'left',
+                        })
+                        .moveDown(1);
+                        break;        
+                    case 30<= session?.grade <60:
+                        doc.fontSize(14)
+                            .font('Helvetica')
+                            .text(`You are on the right track ${session.studentName}! You've achieved ${session.grade}/100! Lets see the summary to make the next grade even better.`,{
+                                align:'left'
+                            })
+                            .moveDown(1);
+                        break;
+                    case 60<= session?.grade <= 89:
+                        doc.fontSize(14)
+                            .font('Helvetica')
+                            .text(`Congratultions, you are almost very good at what you are doing ${session?.studentName}. You've got ${session.grade}! There are a few mistakes here and there but keep it up!`,{
+                                align:'left'
+                            })
+                            .moveDown(1);
+                        break;
+                    case 90<= session?.grade <= 98:
+                        doc.fontSize(14)
+                            .font('Helvetica')
+                            .text(`Congratultions, you are almost impeccable ${session?.studentName}. You've got ${session.grade}! There are a few mistakes here and there but keep it up!`,{
+                                align:'left'
+                            })
+                            .moveDown(1);
+                        break;
+                    case 98< session?.grade <= 100:
+                        doc.fontSize(14)
+                            .font('Helvetica')
+                            .text(`Congratulations ${session?.studentName}! You've achieved a perfect ${session.grade}, like a real driver!`,{
+                                align:'left'
+                            })
+                            .moveDown(1);
+                        break;
+                    default:
+                        doc.fontSize(14)
+                        .font('Helvetica')
+                        .text(`Congratulations ${session.studentName} on achieving ${session.grade}!`, {
+                            align: 'left',
+                        })
+                        .moveDown(1);
+                        break
+                }
                 if(session?.mistakes){
+                    let feedSession = new Map()
+                    let counted = new Map()
+                
                     session.mistakes.forEach((mistake, mistakeIndex) => {
                         // Mistakes Section
                         if (!mistake) {
@@ -79,23 +128,24 @@ export function createPdf(user,sessionsReq)
                                    align: 'left',
                                });
                         } else {
-                            doc.fontSize(12)
-                               .font('Helvetica')
-                               .text(`Mistake ${mistakeIndex + 1}:`, {
-                                   align: 'left',
-                                   underline: true,
-                               })
-                               .fontSize(11)
-                               .font('Helvetica')
-                               .text(`Mistake done at ${mistake.time} on ${mistake.map}`, {
-                                   indent: 20,
-                               })
-                               .text(`Received a ${mistake.penalty} penalty for ${mistake.mistakeType}`, {
-                                   indent: 20,
-                               })
-                               .moveDown(1);
+                            feedSession = checkMistake(mistake?.mistakeType,feedSession)
+                            counted = countMistake(mistake?.mistakeType, counted)
                         }
-                    });
+                    })
+                    console.log(feedSession.size)
+                    if(feedSession.size > 0){
+                        for (const [key, feedback] of feedSession){
+
+                            doc.fontSize(12)
+                                .font('Helvetica')
+                                .text(`${feedback} x${counted.get(key)} (Amount of times done)`,{
+                                    align:'left',
+                                    indent: 20
+                                })
+                                .moveDown(1)
+                        }
+                    }
+                    
                 }
                
         
@@ -160,14 +210,60 @@ export function createSessionPdf(session){
                 .moveDown(0.5);
     
             // Student Name and Grade
-            doc.fontSize(14)
-                .font('Helvetica')
-                .text(`Grade : ${session.grade}`, {
-                    align: 'left',
-                })
-                .moveDown(1);
+            switch(true){
+                case session?.grade <30:
+                    doc.fontSize(14)
+                    .font('Helvetica')
+                    .text(`${session.studentName} you've achieved ${session.grade}/100! Everybody can make mistakes, so lets just go overthe summary and see what we can improve on!`, {
+                        align: 'left',
+                    })
+                    .moveDown(1);
+                    break;        
+                case 30<= session?.grade <60:
+                    doc.fontSize(14)
+                        .font('Helvetica')
+                        .text(`You are on the right track ${session.studentName}! You've achieved ${session.grade}/100! Lets see the summary to make the next grade even better.`,{
+                            align:'left'
+                        })
+                        .moveDown(1);
+                    break;
+                case 60<= session?.grade <= 89:
+                    doc.fontSize(14)
+                        .font('Helvetica')
+                        .text(`Congratultions, you are almost very good at what you are doing ${session?.studentName}. You've got ${session.grade}! There are a few mistakes here and there but keep it up!`,{
+                            align:'left'
+                        })
+                        .moveDown(1);
+                    break;
+                case 90<= session?.grade <= 98:
+                    doc.fontSize(14)
+                        .font('Helvetica')
+                        .text(`Congratultions, you are almost impeccable ${session?.studentName}. You've got ${session.grade}! There are a few mistakes here and there but keep it up!`,{
+                            align:'left'
+                        })
+                        .moveDown(1);
+                    break;
+                case 98< session?.grade <= 100:
+                    doc.fontSize(14)
+                        .font('Helvetica')
+                        .text(`Congratulations ${session?.studentName}! You've achieved a perfect ${session.grade}, like a real driver!`,{
+                            align:'left'
+                        })
+                        .moveDown(1);
+                    break;
+                default:
+                    doc.fontSize(14)
+                    .font('Helvetica')
+                    .text(`Congratulations ${session.studentName} on achieving ${session.grade}!`, {
+                        align: 'left',
+                    })
+                    .moveDown(1);
+                    break
+            }
                 
             if(session.mistakes){
+                let feedSession = new Map();
+                let counted = new Map();
                 session.mistakes.forEach((mistake, index) => {
 
                     // Estimate the height needed for the session text
@@ -178,29 +274,26 @@ export function createSessionPdf(session){
                     if (!mistake) {
                         doc.fontSize(12)
                             .font('Helvetica-Oblique')
-                            .text("No mistakes! Congrats!", {
+                            .text("No mistakes! Congratulations again!", {
                                 align: 'left',
                             });
                     } else {
+                        feedSession = checkMistake(mistake?.mistakeType,feedSession)
+                        counted = countMistake(mistake?.mistakeType, counted)
+                    }
+                });
+                if(feedSession.size > 0){
+                    for (const [key, feedback] of feedSession){
+
                         doc.fontSize(12)
                             .font('Helvetica')
-                            .text(`Mistake ${index + 1}:`, {
-                                align: 'left',
-                                underline: true,
+                            .text(`${feedback} x${counted.get(key)} (Amount of times done)`,{
+                                align:'left',
+                                indent: 20
                             })
-                            .fontSize(11)
-                            .font('Helvetica')
-                            .text(`Mistake done at ${mistake.time} on ${mistake.map}`, {
-                                indent: 20,
-                            })
-                            .text(`Received a ${mistake.penalty} penalty for ${mistake.mistakeType}`, {
-                                indent: 20,
-                            })
-                            .moveDown(1);
+                            .moveDown(1)
                     }
-                    
-                });
-    
+                }
             }
             
             // Finalize the PDF and end the stream
