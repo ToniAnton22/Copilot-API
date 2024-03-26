@@ -26,7 +26,8 @@ var userSchema = new Schema({
         }]
     }],
     paidStatus: String,
-    tokens:Number
+    tokens:Number,
+    plan:String
 
 })
 

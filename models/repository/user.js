@@ -43,4 +43,13 @@ export default class UserDao{
         await dbConnect()
         return await UserModel.findOneAndUpdate({email:ids}, queryParams)
     }
+    async findById(id){
+        try{
+            await dbConnect()
+            return await UserModel.findById(id)
+        }catch(e){
+            console.log("Database error.")
+        }
+
+    }
 }

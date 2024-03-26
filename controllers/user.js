@@ -12,10 +12,24 @@ export async function createUser(req,res){
     }
 }
 
+export async function findUserById(req,res){
+    try{
+        const user = await userService.findUserId(req.headers['id'])
+        console.log(user)
+        if(user){
+            res.status(200).send("User does exist in the database")
+        }else{
+            res.status(400).send("User doesn't exist. Abandoning token creation.")
+        }
+    }catch(e){
+        console.error(e.message)
+        req.status(500).send("An server error has occured")
+    }
+}
+
 export async function findSessionByEmail(req,res){
     try{
         const sessions = await userService.findSessionByEmail(req.body)
-        console.log(sessions)
         if(sessions){
             res.status(200).send("OK")
         }else{
@@ -29,7 +43,12 @@ export async function findSessionByEmail(req,res){
 }
 
 export async function updateUser(req,res){
-    const event = req.body.data.object
+    let event
+    if(req?.body?.data){
+        event = req?.body?.data?.object
+    }else{
+        event = req?.data?.object
+    }
     try{
         
 

@@ -55,7 +55,7 @@ const transporter = nodemailer.createTransport({
 
 
 transporter.use('compile', hbs(handlebarOptions))
-export default async function send(userData, template, pdf = null) {
+export default function send(userData, template, pdf = null) {
     let attachments = [];
     if (pdf) {
         if(!userData?.fullname){
@@ -73,7 +73,7 @@ export default async function send(userData, template, pdf = null) {
     console.log("Email is processed.....")
     try {
         console.log("sending")
-        const info = await transporter.sendMail({
+        const info = transporter.sendMail({
             from: `Sida from Fellow-bot <${process.env.EMAIL}>`,
             to: userData?.email,
             subject: "Your driving session",

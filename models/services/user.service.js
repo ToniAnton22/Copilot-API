@@ -18,6 +18,14 @@ export default class UserService{
             }).catch(err => {reject(err)})
         })
     }
+
+    findUserId(id){
+        return new Promise(function(resolve,reject){
+            repository.findById(id).then(data =>{
+                resolve(data)
+            }).catch(err => {reject(err)})
+        })
+    }
     
     findUserByEmail(email){
         return new Promise(function(resolve, reject){
@@ -91,43 +99,20 @@ export default class UserService{
                 let userData;
                 let tokens=1;
                 let password = generatePassword()
-                let findUsers = await repository.findUserEmail("nodnafornow@gmail.com")
+                //let findUsers = await repository.findUserEmail(event.metadata["Customer Email"])
               
                 if(findUsers?.tokens){
                     tokens = 1 + findUsers?.tokens 
                 }
                 userData= {
                     password: password,
-                    email: "nodnafornow@gmail.com",
-                    fullname: event.shipping.name,
+                    email: event.metadata["Customer Email"],
+                    fullname: event.metadata["Customer Name"],
                     yearlyExpiry: timeCalculator(new Date()),
                     expiresOn: new Date(),
                     createdAt: new Date(event.created),
                     plan: "Token",
-                    sessions: [{
-                        studentName: event.shipping.name,
-                        timeStarted: new Date(),
-                        timeEnd: new Date(),
-                        grade: 100,
-                        mistakes: [{
-                            mistakeType:'Not stopping at stop',
-                            penalty:10,
-                            time: new Date(),
-                            map:"none"
-                        }]
-                    },
-                    {
-                        timeStarted: new Date(),
-                        timeExit: new Date(),
-                        grade: 45,
-                        mistakes:[{
-                            mistakeType:'Not stopping at stop',
-                            penalty:5,
-                            time: new Date(),
-                            map:"none"
-                        }]
-                    }
-                ],
+                    sessions: [{}],
                     paidStatus: event.status,
                     tokens: tokens,
                     gameStarted: [String],
@@ -136,8 +121,8 @@ export default class UserService{
                
             if(!findUsers){
                 console.log("I haven't found one")
-                //repository.create(userData)
-                //send(userData)
+                repository.create(userData)
+                send(userData)
                 return resolve("Success")
             }else{
                 console.log("I will update")
